@@ -1,8 +1,10 @@
-
-target/*
-
+.idea
 .idea/*
-.settings/*
-API/target/*
-.classpath
-.project
+.github
+.github/*
+API/API.iml
+docs/.idea/*
+API/mvnw
+API/mvnw.cmd
+
+
