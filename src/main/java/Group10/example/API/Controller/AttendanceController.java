@@ -57,19 +57,38 @@ public class AttendanceController {
         return attendanceService.findStudentIdListByCourseId(courseId);
     }
 
+    @GetMapping(value = "courses/findattendancesbycourseid/{id}")//checked
+    public Collection<AttendanceTemplate> findAttendancesByCourseId(@PathVariable("id")String courseId){
+        return attendanceService.findAttendancesByCourseId(courseId);
+    }
+
     //this must return only one object (collection has only one object)
     @GetMapping(value = "attendance/findattendancebystudentidandcourseid")//checked
     public Attendance findAttendanceByStudentAndCourse(@RequestParam(name = "course")String courseId,
-                                                                   @RequestParam(name = "student")String studentId){
+                                                       @RequestParam(name = "student")String studentId){
         return attendanceService.findAttendanceByStudentAndCourse(courseId,studentId);
     }
 
+    //adding attendance log (done by device itself)
+    //adding single log item
     @PostMapping(value = "attendance/addlog")//checked
     public String addAttendanceLog(@RequestParam(name = "course")String courseId,
                                    @RequestParam(name = "student")String studentId,
                                    @Valid @RequestBody AttendanceItem attendanceItem){
         return attendanceService.addAttendanceLog(courseId,studentId,attendanceItem);
     }
+    //adding complete attendance records of the class
+    @PostMapping(value = "attendance/addcompleterecord")//checked
+    public String addCompleteAttendanceRecord(@Valid @RequestBody AttendanceLogList attendanceLogList){
+        return attendanceService.addCompleteAttendanceRecord(attendanceLogList);
+    }
+
+    /////////////////////////////////////////////////////////new////////////////////
+    @PostMapping(value = "attendance/addrecord")
+    public String addRecords(@RequestBody AttendanceNew attendanceNew) {
+        return attendanceService.addRecords(attendanceNew);
+    }
+
 
     @DeleteMapping(value = "attendance/deletebystudentid/{id}")
     public void deleteAllByStudentId(@PathVariable("id")String studentId){
