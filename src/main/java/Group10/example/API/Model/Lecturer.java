@@ -6,9 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 @Document(collection = "Lecturer")
 public class Lecturer {
@@ -46,9 +43,6 @@ public class Lecturer {
     @NotNull(message = "Department is mandatory")
     private String department;
 
-    private Set<String>  courseIds = new HashSet<>();
-
-    private HashSet<String> groupSet = new HashSet<>();
 
     public String getLectID() {
         return lectID;
@@ -112,26 +106,5 @@ public class Lecturer {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public Set<String> getCourseIds() {
-        return courseIds;
-    }
-
-    public void setCourseIds(Set<String> courseIds) {
-        this.courseIds = courseIds;
-    }
-
-    public void addCourse(Optional<Course> course){
-        course.ifPresent(c -> this.courseIds.add(c.getCourseId()));
-        System.out.println(this.getCourseIds());
-    }
-
-    public void removeCourse(Optional<Course> course){
-        course.ifPresent(c -> this.courseIds.remove(c.getCourseId()));
-    }
-
-    public void removeAllCourses(){
-        this.courseIds.clear();
     }
 }

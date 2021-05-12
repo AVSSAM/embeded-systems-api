@@ -57,6 +57,11 @@ public class CourseController {
         return courseService.addLogItem(course_id,log);
     }
 
+    @PutMapping(value = "/addscheduleitem/{id}")//checked
+    public Optional<Course> addScheduleItem(@PathVariable("id") String course_id,@Valid @RequestBody Schedule schedule){
+        return courseService.addScheduleItem(course_id,schedule);
+    }
+
     @GetMapping(value = "/findbycoursenumber/{courseNumber}")//checked
     public Optional<Course> findByCourseNumber(@PathVariable("courseNumber") String courseNumber){
         return courseService.findByCourseNumber(courseNumber);
@@ -66,6 +71,12 @@ public class CourseController {
     public Collection<Log> findAllLogs(){
         return courseService.findAllLogs();
     }
+
+    @GetMapping(value = "/findschedules/all")//checked
+    public Collection<Schedule> findAllSchedules(){
+        return courseService.findAllSchedules();
+    }
+
 
     // n-m relation between course and lecture room
     @GetMapping(value = "/findlectureroomsbycourse/{id}")
@@ -77,4 +88,5 @@ public class CourseController {
     public Collection<Course> findByLectureRoomId(@PathVariable("id") String roomId) {
         return courseService.findByLectureRoomRefRoomId(roomId);
     }
+
 }

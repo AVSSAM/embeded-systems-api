@@ -36,8 +36,6 @@ public class GroupController {
 
     @PostMapping("/create")
     public HashMap<String,String> createGroup(@Valid @RequestBody Group group){
-
-        
         HashMap<String, String> map = new HashMap<>();
         if(groupRepo.findBygroupName(group.getGroupName())!=null){
             map.put("msg","Group Name is already exists");
@@ -102,33 +100,24 @@ public class GroupController {
 
     }
 
-    @RequestMapping(value="/all/students")
-    public HashMap<String, Object>   getStudents(@RequestBody GroupPayLoad groupId){
-        HashMap<String, Object> map = new HashMap<>();
-        Group group =groupService.findGroupByName(groupId.getGroupName());
-        List<String> students = new ArrayList<>();
+    @GetMapping(value="/all/students/{group_id}")
+    public List<Student> getStudents(@PathVariable("group_id") String groupId){
+        Optional<Group> group =groupService.findGroupByID(groupId);
+        List<Student> students = new ArrayList<Student>();
         Set<String> stuID ;
 
-        if(group==null){
+        if(group.isPresent()){
+            stuID = group.get().getStudentList();
+            for(String a:stuID){
 
-            map.put("msg","group not found");
-            return map;
+                Optional<Student> student = studentRepo.findById(a);
+                student.ifPresent(c->students.add(c));
 
-        }
-        stuID = group.getStudentList();
-        for(String a:stuID){
-
-            Student student = studentRepo.findByuserName(a);
-            if(student!=null){
-
-                students.add(student.getUserName());
-                
             }
 
         }
 
-        map.put("students",students);
-        return map;
+        return students;
     }
 
 
@@ -136,7 +125,7 @@ public class GroupController {
     public HashMap<String,Object> removeStudent(@RequestBody GroupPayLoad students){
 
         HashMap<String, Object> map ;
-        String groupId = students.getGroupName();
+        String groupId = students.getGroupId();
         List<String> studentList = students.getIdList();
         map = groupService.removeStudentFromGroup(studentList,groupId);
         return map;
@@ -186,25 +175,5 @@ public class GroupController {
 
 
     }
-
-    @GetMapping(value="/all")
-    public List<String> allGroups() {
-        Collection<Group> groups=groupService.getAll();
-        List<String> groupNames=new ArrayList<>();
-        for(Group group : groups){
-            groupNames.add(group.getGroupName());
-        }
-        return groupNames;
-    }
-
-    @PostMapping(value = "/delete")
-    public Group deleteGroup(@RequestBody GroupPayLoad groupName) {
-        Group grp= groupService.findGroupByName(groupName.getGroupName());
-        String grpId = grp.getGroupID();
-        groupService.deleteGroup(grpId);
-        return grp;
-
-    }
-
 
 }

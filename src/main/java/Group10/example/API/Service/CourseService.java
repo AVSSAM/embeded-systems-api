@@ -3,7 +3,6 @@ package Group10.example.API.Service;
 import Group10.example.API.DAO.CourseDAO;
 import Group10.example.API.DAO.LectureRoomDAO;
 import Group10.example.API.Model.*;
-import Group10.example.API.Repository.LectureRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +12,12 @@ import java.util.*;
 public class CourseService {
 
     private final CourseDAO courseDAO;
+    private final LectureRoomDAO lectureRoomDAO;
 
     @Autowired
-    public CourseService(CourseDAO courseDAO ) {
+    public CourseService(CourseDAO courseDAO, LectureRoomDAO lectureRoomDAO) {
         this.courseDAO = courseDAO;
+        this.lectureRoomDAO = lectureRoomDAO;
     }
 
     public Collection<Course> getCourses() {
@@ -24,6 +25,17 @@ public class CourseService {
     }
 
     public Course addCourse(Course course) {
+        HashSet<LectureRoomRef> uniqueLectureRooms = new HashSet<>();
+        //lectureRooms field of course object will be initially null or Empty
+        //in the schedule field of course object there is a roomName field
+        //get the lectureRooms according to roomNames and address them to lectureRooms field
+        //to get unique lecture rooms used a hashSet
+        for (Schedule s:course.getTimeTable()){
+            Optional<LectureRoom> lectureRoom= lectureRoomDAO.findByRoomName(s.getRoomName());
+            lectureRoom.ifPresent(lr -> uniqueLectureRooms.add(new LectureRoomRef(lr.getRoomId())));
+        }
+        //unique lectureroom ids will be added t the course
+        course.addLectureRooms(uniqueLectureRooms);
         return courseDAO.addCourse(course);
     }
 
@@ -49,6 +61,14 @@ public class CourseService {
 
     public Collection<Log> findAllLogs() {
         return courseDAO.findAllLogs();
+    }
+
+    public Optional<Course> addScheduleItem(String course_id, Schedule schedule) {
+        return courseDAO.addScheduleItem(course_id,schedule);
+    }
+
+    public Collection<Schedule> findAllSchedules() {
+        return courseDAO.findAllSchedules();
     }
 
     public Optional<Course> findByCourseNumber(String courseNumber) {

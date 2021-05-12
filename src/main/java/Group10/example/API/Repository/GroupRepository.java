@@ -17,8 +17,6 @@ public interface GroupRepository extends MongoRepository<Group,String> {
 
     public Group findBygroupName(String groupName);
 
-
-
     @Override
     <S extends Group> List<S> saveAll(Iterable<S> iterable);
 

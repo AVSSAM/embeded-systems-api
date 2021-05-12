@@ -27,11 +27,8 @@ public class StudentService {
     @Autowired
     AttendanceService attService;
 
-    @Autowired
-    StudentRepository studentRepository;
-
     public Student addStudent(Student student){
-        return stuRepo.save(student);
+       return stuRepo.save(student);
     }
 
     public HashMap<String, Object> deleteStudent(String id){
@@ -86,7 +83,7 @@ public class StudentService {
                 userCourses.add(courseDetails);
             }
         }
-        UserDetails userDetails = new UserDetails(stu.getFirstName(),stu.getRegNumber());
+        UserDetails userDetails = new UserDetails(stu.getUserName(),stu.getRegNumber());
         //return user details and course details
         map.put("student",userDetails);
         map.put("courses",userCourses);
@@ -117,7 +114,7 @@ public class StudentService {
         map.put("msg","user name successfully updated");
         return map;
     }
-
+    
     public String passGenerate(){
 
         // create a string of uppercase and lowercase characters and numbers
@@ -153,13 +150,10 @@ public class StudentService {
         String randomString = sb.toString();
 
         return randomString;
-    }
+    } 
 
     public void sendMail(String to,String body,String sub){
         mailService.sendMail(to, body, sub);
     }
 
-    public Optional<Student> findByRegNumber(String regNumber) {
-        return studentRepository.findByRegNumber(regNumber);
-    }
 }

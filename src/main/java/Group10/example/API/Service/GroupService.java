@@ -61,19 +61,19 @@ public class GroupService {
     public HashMap<String, Object> addStudents(List<String> student, String ID){
         HashMap<String, Object> map = new HashMap<>();
         map.put("msg","student successfully added");
-        Group group = groupRepository.findBygroupName(ID);
+        Optional<Group> group = groupRepository.findById(ID);
 
-        if(group==null){
+        if(!group.isPresent()){
             map.put("msg","Group is not found");
             return map;
         }
 
-        HashSet<String> studentList = group.getStudentList();
+        HashSet<String> studentList = group.get().getStudentList();
 
         for(String a:student) {
-            Student stu = studentRepo.findByuserName(a);
-            if (stu!=null) {
-                studentList.add(stu.getUserName());
+            Optional<Student> stu = studentRepo.findById(a);
+            if (stu.isPresent()) {
+                stu.ifPresent(s -> studentList.add(stu.get().getStudentID()));
             }
             else{
                 map.put("msg","Student is not found");
@@ -82,32 +82,34 @@ public class GroupService {
         }
 
 
-        groupRepository.save(group);
+        group.ifPresent(g->groupRepository.save(g));
         return map;
 
     }
 
     public HashMap<String,Object> removeStudentFromGroup(List<String> students, String ID){
-        Group group = groupRepository.findBygroupName(ID);
+        Optional<Group> group = groupRepository.findById(ID);
         HashMap<String, Object> map = new HashMap<>();
 
-        if(group==null){
+        if(!group.isPresent()){
             map.put("msg","Group is not found");
             return map;
 
         }
 
-
-
-        HashSet<String> studentList = group.getStudentList();
-
-        for(String a:students) {
-            studentList.remove(a);
-        }
-
         map.put("msg","student successfully deleted");
 
-        groupRepository.save(group);
+        HashSet<String> studentList = group.get().getStudentList();
+
+        if(group.isPresent()) {
+
+            for(String a:students) {
+                studentList.remove(a);
+            }
+        }
+
+
+        group.ifPresent(g->groupRepository.save(g));
         return map;
     }
 
@@ -176,6 +178,7 @@ public class GroupService {
         HashMap<String, Object> map = new HashMap<>();
         map.put("msg","course successfully added");
         Optional<Group> group = groupRepository.findById(ID);
+
         if(group==null){
             map.put("msg","Group is not found");
             return map;
@@ -221,11 +224,6 @@ public class GroupService {
 
         group.ifPresent(g->groupRepository.save(g));
         return map;
-    }
-
-    public Group findGroupByName(String name){
-        return groupRepository.findBygroupName(name);
-
     }
 
 

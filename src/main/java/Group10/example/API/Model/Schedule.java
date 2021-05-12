@@ -1,66 +1,50 @@
 package Group10.example.API.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Document(collection = "Schedule")
 public class Schedule {
 
-    @Id
-    public String scheduleId;
-
-    @NotNull(message = "course ID cannot be Null")
-    private String courseId;
-
-    private String courseNumber;
-
-    @NotNull(message = "Lecturer ID cannot be null")
-    private String lecturerId;
-
-    @NotNull(message = "Lecture Room ID cannot be Null")
-    private String roomId;
-
-    private String roomName;
-
-    @Pattern(regexp = "MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY")
+    @JsonFormat(pattern = "yyyy-MM-dd",shape = JsonFormat.Shape.STRING)
+    private LocalDate date;//exam dates
     private String dayOfWeek;//weekly schedule
 
     @NotNull(message = "Start Time cannot be Null")
-    @JsonFormat(pattern = "HH:mm",shape = JsonFormat.Shape.STRING)
-    @Pattern(regexp = "\\b\\d\\d:\\d\\d\\b",message = "startTime is not in Correct Format")
-    private String startTime;
+    @JsonFormat(pattern = "HH:mm:ss",shape = JsonFormat.Shape.STRING)
+    private LocalTime start_time;
 
     @NotNull(message = "End Time cannot be Null")
-    @JsonFormat(pattern = "HH:mm",shape = JsonFormat.Shape.STRING)
-    @Pattern(regexp = "\\b\\d\\d:\\d\\d\\b",message = "endTime is not in Correct Format")
-    private String endTime;
+    @JsonFormat(pattern = "HH:mm:ss",shape = JsonFormat.Shape.STRING)
+    private LocalTime end_time;
 
     @NotNull(message = "Lab or Lecture cannot be Null")
-    @Min(value = 0)
-    @Max(value = 1)
-    private int labOrLecture;//lab = 1 , lecture = 0
+    private int lab_or_lecture;//lab = 1 , lecture = 0 , exam = 2
+
+    @NotNull(message = "Lecture Room name cannot be Null")
+    private String roomName;
+
+    private String course_id;//this will generated
 
 
-    public Schedule(String dayOfWeek, String startTime, String endTime, int labOrLecture, String roomId, String lecturerId) {
+    public Schedule(LocalDate date,String dayOfWeek, LocalTime start_time, LocalTime end_time, int lab_or_lecture,String roomName) {
+        this.date = date;
         this.dayOfWeek = dayOfWeek;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.labOrLecture = labOrLecture;
-        this.roomId = roomId;
-        this.lecturerId = lecturerId;
+        this.start_time = start_time;
+        this.end_time = end_time;
+        this.lab_or_lecture = lab_or_lecture;
+        this.roomName = roomName;
     }
 
-    public String getScheduleId() {
-        return scheduleId;
+    public LocalDate getDate() {
+        return date;
     }
 
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
     public String getDayOfWeek() {
         return dayOfWeek;
     }
@@ -69,60 +53,28 @@ public class Schedule {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public LocalTime getStart_time() {
+        return start_time;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setStart_time(LocalTime start_time) {
+        this.start_time = start_time;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public LocalTime getEnd_time() {
+        return end_time;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setEnd_time(LocalTime end_time) {
+        this.end_time = end_time;
     }
 
-    public int getLabOrLecture() {
-        return labOrLecture;
+    public int getLab_or_lecture() {
+        return lab_or_lecture;
     }
 
-    public void setLabOrLecture(int labOrLecture) {
-        this.labOrLecture = labOrLecture;
-    }
-
-    public String getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
-
-    public String getLecturerId() {
-        return lecturerId;
-    }
-
-    public void setLecturerId(String lecturerId) {
-        this.lecturerId = lecturerId;
-    }
-
-    public String getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
-    }
-
-    public String getCourseNumber() {
-        return courseNumber;
-    }
-
-    public void setCourseNumber(String courseNumber) {
-        this.courseNumber = courseNumber;
+    public void setLab_or_lecture(int lab_or_lecture) {
+        this.lab_or_lecture = lab_or_lecture;
     }
 
     public String getRoomName() {
@@ -131,5 +83,13 @@ public class Schedule {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
+    }
+
+    public String getCourse_id() {
+        return course_id;
+    }
+
+    public void setCourse_id(String course_id) {
+        this.course_id = course_id;
     }
 }
